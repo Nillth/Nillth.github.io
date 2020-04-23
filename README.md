@@ -1,9 +1,21 @@
 [Nillths Repos](https://github.com/Nillth)
 
-<html>
-    <form  action="http://formspree.io/you@email.com"  method="post">  <input  type="email"  name="_replyto">  <textarea  name="body"></textarea>  <input  type="submit"  value="Send">  </form>
-</html>
+
+<body>
+
+<form  action="http://formspree.io/marc@nillth.com"  method="post">
+
+Name: <input  type="text"  name="Name"  placeholder="Your Name">
+
+Email: <input  type="email"  name="_replyto"  placeholder="Your Email">
+
+Message: <textarea  name="message"  placeholder="Your Message"></textarea><input  type="submit"  value="Send"/>
+
+<input  type="hidden"  name="_subject"  Value="Submitted from Nillth.net"/>
+
+</form>
+
+</body>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTgzMzczNzY0NSwtNzc5NjQyODY0LC0yND
-A3NDM5MTldfQ==
+eyJoaXN0b3J5IjpbLTE4NDUxODgyNF19
 -->
