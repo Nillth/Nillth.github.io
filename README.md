@@ -14,7 +14,10 @@
 
 <br />
 <br />
-<img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=QlikProfessionalServices&repo=Qlik-NPrinting-CLI&title_color=fff&icon_color=f9f9f9&text_color=9f9f9f&bg_color=151515"/>
+<img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=QlikProfessionalServices&repo=QlikNPrinting-CLI&title_color=fff&icon_color=f9f9f9&text_color=9f9f9f&bg_color=151515"/>
+<br />
+<img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=QlikProfessionalServices&repo=QlikView-CLI&title_color=fff&icon_color=f9f9f9&text_color=9f9f9f&bg_color=151515"/>
+<br />
 <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=Nillth&repo=PWSH-LDAP&title_color=fff&icon_color=f9f9f9&text_color=9f9f9f&bg_color=151515"/>
 <br />
 <br />
