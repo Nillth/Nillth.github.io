@@ -256,46 +256,74 @@
     /* ── Stats Section ── */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 16px;
+      margin-bottom: 32px;
     }
 
     .stat-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 20px 16px;
       text-align: center;
       transition: all .25s;
     }
-    .stat-card:hover {
-      border-color: #2a3040;
-    }
+    .stat-card:hover { border-color: #2a3040; }
 
     .stat-number {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 700;
-      color: var(--accent);
+      color: var(--heading);
       line-height: 1;
       margin-bottom: 4px;
     }
 
     .stat-label {
-      font-size: .8rem;
+      font-size: .75rem;
       color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: .05em;
     }
 
-    /* ── GitHub Chart ── */
-    .github-chart {
-      margin-top: 16px;
-      text-align: center;
+    /* ── Language bar ── */
+    .lang-section h3 {
+      font-size: .875rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 12px;
     }
-    .github-chart img {
-      max-width: 100%;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
+
+    .lang-bar {
+      display: flex;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: var(--border);
+    }
+    .lang-bar span { transition: width .6s ease; }
+
+    .lang-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      list-style: none;
+    }
+    .lang-list li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .8rem;
+      color: var(--text);
+    }
+    .lang-list .pct {
+      color: var(--text-dim);
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     /* ── Divider ── */
@@ -427,24 +455,17 @@
 
   <div class="container"><hr class="divider"></div>
 
-  <!-- ── GitHub Activity ── -->
+  <!-- ── GitHub Stats ── -->
   <section class="reveal">
     <div class="container">
-      <p class="section-label">GitHub Activity</p>
-      <div class="github-chart">
-        <img
-          src="https://github-readme-stats.vercel.app/api?username=Nillth&show_icons=true&title_color=34d399&icon_color=34d399&text_color=c9cdd3&bg_color=13161a&border_color=1e2228&hide_border=false&border_radius=12"
-          alt="GitHub stats for Marc Collins"
-          loading="lazy"
-        >
+      <p class="section-label">GitHub</p>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Repos</div></div>
+        <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Stars</div></div>
+        <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Forks</div></div>
+        <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Followers</div></div>
       </div>
-      <div class="github-chart">
-        <img
-          src="https://github-readme-stats.vercel.app/api/top-langs/?username=Nillth&layout=compact&title_color=34d399&text_color=c9cdd3&bg_color=13161a&border_color=1e2228&hide_border=false&border_radius=12"
-          alt="Top languages"
-          loading="lazy"
-        >
-      </div>
+      <div class="lang-section" id="lang-section"></div>
     </div>
   </section>
 
@@ -485,12 +506,8 @@
 
     /* ── Build a project card ── */
     function renderCard(repo) {
-      const owner = repo.owner.login;
-      const isOrg = owner.toLowerCase() !== 'nillth';
       const color = langColors[repo.language] || '#6b7280';
-
       return `<a class="project-card" href="${repo.html_url}" target="_blank" rel="noopener">
-        ${isOrg ? `<span class="project-org">${owner}</span>` : ''}
         <h3>${repoIcon} ${repo.name}</h3>
         <p>${repo.description || 'No description provided.'}</p>
         <div class="project-meta">
@@ -501,22 +518,65 @@
       </a>`;
     }
 
-    /* ── Fetch repos, sort by stars, render ── */
-    async function loadProjects() {
+    /* ── Render stats cards ── */
+    function renderStats(user, repos) {
+      const totalStars = repos.reduce((s, r) => s + r.stargazers_count, 0);
+      const totalForks = repos.reduce((s, r) => s + r.forks_count, 0);
+      const data = [
+        { n: user.public_repos, l: 'Repos' },
+        { n: totalStars,        l: 'Stars' },
+        { n: totalForks,        l: 'Forks' },
+        { n: user.followers,    l: 'Followers' },
+      ];
+      document.getElementById('stats-grid').innerHTML = data.map(d =>
+        `<div class="stat-card"><div class="stat-number">${d.n}</div><div class="stat-label">${d.l}</div></div>`
+      ).join('');
+    }
+
+    /* ── Render language breakdown bar ── */
+    function renderLanguages(repos) {
+      const counts = {};
+      for (const r of repos) {
+        if (r.language) counts[r.language] = (counts[r.language] || 0) + r.size;
+      }
+      const total = Object.values(counts).reduce((a, b) => a + b, 0);
+      if (!total) return;
+
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      const bar = sorted.map(([lang, bytes]) => {
+        const pct = ((bytes / total) * 100).toFixed(1);
+        const color = langColors[lang] || '#6b7280';
+        return `<span style="width:${pct}%;background:${color}" title="${lang} ${pct}%"></span>`;
+      }).join('');
+
+      const list = sorted.map(([lang, bytes]) => {
+        const pct = ((bytes / total) * 100).toFixed(1);
+        const color = langColors[lang] || '#6b7280';
+        return `<li><span class="lang-dot" style="background:${color}"></span>${lang} <span class="pct">${pct}%</span></li>`;
+      }).join('');
+
+      document.getElementById('lang-section').innerHTML =
+        `<h3>Languages</h3><div class="lang-bar">${bar}</div><ul class="lang-list">${list}</ul>`;
+    }
+
+    /* ── Fetch everything and render ── */
+    async function loadGitHub() {
       const grid = document.getElementById('projects-grid');
       try {
-        const res = await fetch(
-          'https://api.github.com/users/Nillth/repos?per_page=100&type=public'
-        );
-        if (!res.ok) throw new Error(res.statusText);
-        const repos = await res.json();
+        const [userRes, reposRes] = await Promise.all([
+          fetch('https://api.github.com/users/Nillth'),
+          fetch('https://api.github.com/users/Nillth/repos?per_page=100&type=public'),
+        ]);
+        if (!userRes.ok || !reposRes.ok) throw new Error('API error');
+        const user  = await userRes.json();
+        const repos = await reposRes.json();
 
-        /* Filter out forks, sort by stars descending */
-        const sorted = repos
-          .filter(r => !r.fork && !r.archived)
-          .sort((a, b) => b.stargazers_count - a.stargazers_count);
+        const owned = repos.filter(r => !r.fork && !r.archived);
+        const sorted = owned.sort((a, b) => b.stargazers_count - a.stargazers_count);
 
         grid.innerHTML = sorted.map(renderCard).join('');
+        renderStats(user, owned);
+        renderLanguages(owned);
       } catch (err) {
         grid.innerHTML = `<p class="projects-error">
           Could not load projects from GitHub.<br>
@@ -525,7 +585,7 @@
       }
     }
 
-    loadProjects();
+    loadGitHub();
   </script>
 
 </body>
