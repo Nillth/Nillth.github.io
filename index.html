@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marc Collins</title>
+  <meta name="description" content="Marc Collins — Software engineer, PowerShell developer, and open-source contributor.">
+  <meta name="author" content="Marc Collins">
+  <link rel="canonical" href="https://nillth.net">
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:        #0b0d0f;
+      --bg-card:   #13161a;
+      --bg-hover:  #1a1e24;
+      --border:    #1e2228;
+      --text:      #c9cdd3;
+      --text-dim:  #6b7280;
+      --heading:   #f0f2f4;
+      --accent:    #34d399;
+      --accent-dim:#065f46;
+      --radius:    12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color .2s; }
+    a:hover { color: #6ee7b7; }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Ambient glow ── */
+    .glow {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(52,211,153,.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Header / Hero ── */
+    header {
+      position: relative;
+      z-index: 1;
+      padding: 100px 0 60px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--border);
+      margin-bottom: 28px;
+      transition: border-color .3s, transform .3s;
+    }
+    .avatar:hover { border-color: var(--accent); transform: scale(1.05); }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--heading);
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .tagline {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+
+    /* ── Social Links ── */
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text);
+      font-size: .875rem;
+      font-weight: 500;
+      transition: all .25s;
+    }
+    .social-link:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent);
+      color: var(--heading);
+      transform: translateY(-2px);
+    }
+    .social-link svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* ── Sections ── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 48px 0;
+    }
+
+    .section-label {
+      font-size: .75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    /* ── Project Cards ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: all .25s;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover {
+      background: var(--bg-hover);
+      border-color: #2a3040;
+      transform: translateY(-3px);
+    }
+
+    .project-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .project-card h3 svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    .project-card p {
+      font-size: .875rem;
+      color: var(--text-dim);
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: .8rem;
+      color: var(--text-dim);
+    }
+
+    .lang-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .lang-powershell { background: #012456; }
+    .lang-python { background: #3572A5; }
+
+    .project-org {
+      font-size: .75rem;
+      color: var(--text-dim);
+      opacity: .7;
+      margin-bottom: 4px;
+    }
+
+    /* ── Stats Section ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      transition: all .25s;
+    }
+    .stat-card:hover {
+      border-color: #2a3040;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: .8rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    /* ── GitHub Chart ── */
+    .github-chart {
+      margin-top: 16px;
+      text-align: center;
+    }
+    .github-chart img {
+      max-width: 100%;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 40px 0;
+      text-align: center;
+      font-size: .8rem;
+      color: var(--text-dim);
+    }
+
+    footer .pgp {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      padding: 6px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: .75rem;
+      color: var(--text-dim);
+      transition: border-color .2s;
+    }
+    footer .pgp:hover { border-color: var(--accent); }
+    footer .pgp svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 60px 0 40px; }
+      h1 { font-size: 1.8rem; }
+      .tagline { font-size: 1rem; }
+      .socials { gap: 8px; }
+      .social-link { padding: 8px 14px; font-size: .8rem; }
+      section { padding: 32px 0; }
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Fade-in animation ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp .6s ease forwards;
+    }
+    .fade-in:nth-child(2) { animation-delay: .1s; }
+    .fade-in:nth-child(3) { animation-delay: .2s; }
+    .fade-in:nth-child(4) { animation-delay: .3s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Animate sections on scroll ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow" aria-hidden="true"></div>
+
+  <!-- ── Hero ── -->
+  <header>
+    <div class="container">
+      <img
+        class="avatar fade-in"
+        src="https://github.com/Nillth.png"
+        alt="Marc Collins"
+        loading="eager"
+      >
+      <h1 class="fade-in">Marc Collins</h1>
+      <p class="tagline fade-in">
+        Software engineer building tools with PowerShell, Python, and open-source.
+      </p>
+      <nav class="socials fade-in" aria-label="Social links">
+        <a class="social-link" href="https://github.com/Nillth" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M12 .3a12 12 0 00-3.8 23.38c.6.12.82-.26.82-.58v-2.02c-3.34.73-4.04-1.61-4.04-1.61a3.18 3.18 0 00-1.33-1.76c-1.09-.74.08-.73.08-.73a2.52 2.52 0 011.84 1.24 2.56 2.56 0 003.5 1 2.56 2.56 0 01.76-1.6c-2.67-.3-5.47-1.33-5.47-5.93a4.64 4.64 0 011.24-3.22 4.3 4.3 0 01.12-3.18s1-.33 3.3 1.23a11.4 11.4 0 016 0c2.28-1.56 3.29-1.23 3.29-1.23a4.3 4.3 0 01.12 3.18 4.64 4.64 0 011.23 3.22c0 4.61-2.8 5.63-5.48 5.92a2.86 2.86 0 01.82 2.22v3.29c0 .32.21.7.82.58A12 12 0 0012 .3"/></svg>
+          GitHub
+        </a>
+        <a class="social-link" href="https://linkedin.com/in/Marc9" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05a3.74 3.74 0 013.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 11-.01-4.13 2.06 2.06 0 01.01 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77A1.75 1.75 0 000 1.73v20.54A1.75 1.75 0 001.77 24h20.46A1.75 1.75 0 0024 22.27V1.73A1.75 1.75 0 0022.23 0z"/></svg>
+          LinkedIn
+        </a>
+        <a class="social-link" href="https://gitlab.com/Nillth" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M23.95 14.19l-1.34-4.13-2.67-8.2a.47.47 0 00-.9 0l-2.67 8.2H7.64l-2.68-8.2a.47.47 0 00-.9 0L1.4 10.06.06 14.19a.94.94 0 00.34 1.05L12 23.58l11.6-8.34a.94.94 0 00.34-1.05z"/></svg>
+          GitLab
+        </a>
+        <a class="social-link" href="https://keybase.io/Nillth" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M10.45 21.87a10.23 10.23 0 01-4.63-1.12c-.16-.09-.32-.18-.48-.28l-.07-.04c-.06.07-.12.12-.17.18a3.2 3.2 0 01-2.42 1.1 3.63 3.63 0 01-1.36-.26c.08-.07.16-.13.23-.2a3.62 3.62 0 001.12-2.33 2.1 2.1 0 00-.12-.86 10.2 10.2 0 01-.87-4.15A10.23 10.23 0 0112 3.68a10.2 10.2 0 019.78 7.33 8.6 8.6 0 01-2.12-.34 8.2 8.2 0 00-15.29 1.51 8.23 8.23 0 001.14 6.61l.5.64-.17.8a6 6 0 01-.62 1.56 1.59 1.59 0 00.77.2 1.2 1.2 0 00.92-.42c.3-.33.53-.72.83-1.04a1.7 1.7 0 011.09-.6l.86.52a8.19 8.19 0 004.3 1.2c.17 0 .33 0 .5-.01a8.7 8.7 0 01-2.04.23zm6.32-7.6a.67.67 0 01-.67-.67.67.67 0 111.34 0 .67.67 0 01-.67.67zm2.38-3.12a.62.62 0 00-.44.18l-.1.12-.08.05a2.67 2.67 0 00-1.13-.26h-.11a2.69 2.69 0 00-2.46 1.62l-.07.16a2.69 2.69 0 00.16 2.31c.04.07.08.14.13.2a2.67 2.67 0 003.46.76l.09-.06a2.67 2.67 0 001.12-1.54l.01-.05h-1.8v-.95h2.93l-.01.19a3.6 3.6 0 01-1.13 2.51 3.6 3.6 0 01-5.23-.65 3.62 3.62 0 01.36-4.55l.15-.14a3.6 3.6 0 012.35-1.04h.17c.74 0 1.44.23 2.03.65l-.11.12a.62.62 0 00-.29.56zM20.13 8.3l-.74-.74.74-.76-.52-.52-.76.76-.74-.76-.52.52.75.76-.75.74.52.52.74-.74.76.75.52-.53z"/></svg>
+          Keybase
+        </a>
+        <a class="social-link" href="https://community.qlik.com/t5/user/viewprofilepage/user-id/29458" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M17.28 12.28a5.7 5.7 0 10-6.17 1.64l2.76 2.32a.78.78 0 001.1-.08l1.64-1.96a.78.78 0 00-.08-1.1l-.5-.42a5.67 5.67 0 001.25-2.4zM11.4 8.3a3.58 3.58 0 11-.02 7.16 3.58 3.58 0 01.02-7.16z" fill-rule="evenodd"/></svg>
+          Qlik Community
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container"><hr class="divider"></div>
+
+  <!-- ── Projects ── -->
+  <section class="reveal">
+    <div class="container">
+      <p class="section-label">Projects</p>
+      <div class="projects-grid">
+
+        <a class="project-card" href="https://github.com/QlikProfessionalServices/QlikNPrinting-CLI" target="_blank" rel="noopener">
+          <span class="project-org">Qlik Professional Services</span>
+          <h3>
+            <svg viewBox="0 0 24 24"><path d="M3 3h7a2 2 0 012 2v14a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2zm11 0h7a2 2 0 012 2v14a2 2 0 01-2 2h-7a2 2 0 01-2-2V5a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            QlikNPrinting-CLI
+          </h3>
+          <p>PowerShell command-line interface for Qlik NPrinting API management and automation.</p>
+          <div class="project-meta">
+            <span><span class="lang-dot lang-powershell"></span>PowerShell</span>
+          </div>
+        </a>
+
+        <a class="project-card" href="https://github.com/QlikProfessionalServices/QlikView-CLI" target="_blank" rel="noopener">
+          <span class="project-org">Qlik Professional Services</span>
+          <h3>
+            <svg viewBox="0 0 24 24"><path d="M3 3h7a2 2 0 012 2v14a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2zm11 0h7a2 2 0 012 2v14a2 2 0 01-2 2h-7a2 2 0 01-2-2V5a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            QlikView-CLI
+          </h3>
+          <p>PowerShell command-line interface for QlikView Server management and administration.</p>
+          <div class="project-meta">
+            <span><span class="lang-dot lang-powershell"></span>PowerShell</span>
+          </div>
+        </a>
+
+        <a class="project-card" href="https://github.com/Nillth/PWSH-LDAP" target="_blank" rel="noopener">
+          <span class="project-org">Personal</span>
+          <h3>
+            <svg viewBox="0 0 24 24"><path d="M3 3h7a2 2 0 012 2v14a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2zm11 0h7a2 2 0 012 2v14a2 2 0 01-2 2h-7a2 2 0 01-2-2V5a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            PWSH-LDAP
+          </h3>
+          <p>A PowerShell module for LDAP directory operations — query, modify, and manage directory entries.</p>
+          <div class="project-meta">
+            <span><span class="lang-dot lang-powershell"></span>PowerShell</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><hr class="divider"></div>
+
+  <!-- ── GitHub Activity ── -->
+  <section class="reveal">
+    <div class="container">
+      <p class="section-label">GitHub Activity</p>
+      <div class="github-chart">
+        <img
+          src="https://github-readme-stats.vercel.app/api?username=Nillth&show_icons=true&title_color=34d399&icon_color=34d399&text_color=c9cdd3&bg_color=13161a&border_color=1e2228&hide_border=false&border_radius=12"
+          alt="GitHub stats for Marc Collins"
+          loading="lazy"
+        >
+      </div>
+      <div class="github-chart">
+        <img
+          src="https://github-readme-stats.vercel.app/api/top-langs/?username=Nillth&layout=compact&title_color=34d399&text_color=c9cdd3&bg_color=13161a&border_color=1e2228&hide_border=false&border_radius=12"
+          alt="Top languages"
+          loading="lazy"
+        >
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><hr class="divider"></div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="container">
+      <a class="pgp" href="https://keybase.io/nillth" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        PGP verified on Keybase
+      </a>
+      <p>&copy; 2025 Marc Collins</p>
+    </div>
+  </footer>
+
+  <!-- Scroll reveal -->
+  <script>
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.15 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
