@@ -478,7 +478,7 @@
         <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
         PGP verified on Keybase
       </a>
-      <p>&copy; 2025 Marc Collins</p>
+      <p id="footer-copy">&copy; <script>document.write(new Date().getFullYear())</script></p>
     </div>
   </footer>
 
@@ -577,6 +577,10 @@
         grid.innerHTML = sorted.map(renderCard).join('');
         renderStats(user, owned);
         renderLanguages(owned);
+
+        /* Update footer with name from API */
+        const footer = document.getElementById('footer-copy');
+        if (user.name) footer.textContent = `\u00A9 ${new Date().getFullYear()} ${user.name}`;
       } catch (err) {
         grid.innerHTML = `<p class="projects-error">
           Could not load projects from GitHub.<br>
